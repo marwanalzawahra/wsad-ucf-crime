@@ -1,49 +1,75 @@
 # Weakly Supervised Video Anomaly Detection on UCF-Crime
 
-This repository presents a research-oriented implementation of a **weakly supervised
-video anomaly detection** framework based on **Multiple Instance Learning (MIL)**.
-The approach relies exclusively on video-level labels and is evaluated on the
-**UCF-Crime** benchmark dataset.
+This repository provides a **complete, leakage-safe, and reproducible pipeline** for  
+**Weakly Supervised Video Anomaly Detection (WSVAD)** using the **UCF-Crime** dataset.
 
-The primary focus of this work is on:
-- Robust anomaly scoring under weak supervision
-- Efficient temporal aggregation using MIL
-- Practical suitability for real-time or near real-time scenarios
+The implementation strictly follows **video-level evaluation**, avoiding common pitfalls such as frame-level leakage or invalid AUC computation.
 
 ---
 
-## Research Motivation
-Video anomaly detection in surveillance environments is challenged by the high cost
-and subjectivity of frame-level annotations. Weakly supervised learning provides a
-scalable alternative by learning from coarse video-level labels while still enabling
-meaningful anomaly localization.
+## 📌 Key Features
+
+- ✅ Video-level evaluation only (no frame-level metrics)
+- ✅ Leakage-safe splits using `video_id` as groups
+- ✅ Multiple Instance Learning (MIL)
+  - Mean pooling (baseline)
+  - Attention-based MIL
+- ✅ Context-aware features (per-frame mean & std)
+- ✅ Data augmentation applied to TRAIN only
+- ✅ 5× repeated 70/30 splits with mean ± std reporting
+- ✅ Automatic saving of CSV results, plots, and ZIP archives
 
 ---
 
-## Method Overview
-The proposed framework follows a standard MIL-based pipeline:
-- Feature extraction from fixed-length video segments
-- MIL-based aggregation of segment-level representations
-- Video-level anomaly classification
-- Generation of frame/segment-level anomaly scores for evaluation
+## 🧠 Experimental Pipeline
+
+1. Dataset preparation (UCF-Crime)
+2. Frame extraction (fixed number per video)
+3. Feature extraction (MobileNetV2 – ImageNet pretrained)
+4. Bag construction (one bag per video)
+5. Experiments:
+   - Baseline (mean pooling)
+   - Context-aware
+   - Augmentation (train-only)
+   - Context + Augmentation + MMD (diagnostic)
+   - Attention-based MIL
+6. Evaluation:
+   - Accuracy
+   - F1-score
+   - ROC-AUC
+   - Mean ± Std over 5 runs
 
 ---
 
-## Dataset
-All experiments are conducted on the **UCF-Crime dataset**.
-Due to licensing and copyright restrictions, the dataset is **not included** in this
-repository.
+## 📊 Experiments Included
+
+| Experiment | Context | Augmentation | Attention |
+|-----------|--------|--------------|-----------|
+| baseline | ❌ | ❌ | ❌ |
+| context | ✅ | ❌ | ❌ |
+| aug | ❌ | ✅ (train only) | ❌ |
+| context_aug_mmd | ✅ | ✅ (train only) | ❌ |
+| attention_mil | ❌ | ❌ | ✅ |
 
 ---
 
-## Project Structure
+## 🚨 Critical Evaluation Notes
+
+- All metrics are computed at **VIDEO LEVEL**
+- No frame-level ROC/AUC is reported
+- No test-time augmentation
+- No global statistics used for context features
+- Explicit audits prevent train/test leakage
+
+This design follows **correct WSVAD evaluation practice** and avoids common mistakes in prior literature.
+
+---
+
+## 🗂 Repository Structure
+
 ```text
 wsad-ucf-crime/
-│
-├── data/               # Dataset handling (not included)
-├── features/           # Extracted visual features
-├── models/             # MIL and classification models
-├── experiments/        # Training and evaluation scripts
-├── results/            # Quantitative results and metrics
-├── figures/            # Visualizations and plots
-└── README.md
+ ├── wsad_ucf_crime_full_pipeline.ipynb
+ ├── README.md
+ ├── requirements.txt
+ └── results/   (auto-generated)
