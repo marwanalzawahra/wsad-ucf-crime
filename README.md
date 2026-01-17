@@ -1,5 +1,5 @@
 # Weakly Supervised Video Anomaly Detection on UCF-Crime
-
+This repository accompanies a Master’s thesis and is optimized for Colab + Kaggle workflows.
 This repository provides a **complete, leakage-safe, and reproducible pipeline** for  
 **Weakly Supervised Video Anomaly Detection (WSVAD)** using the **UCF-Crime** dataset.
 
